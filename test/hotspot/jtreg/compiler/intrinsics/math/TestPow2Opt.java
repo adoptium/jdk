@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (C) 2021 THL A29 Limited, a Tencent company. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,30 +21,33 @@
  * questions.
  */
 
-/**
+/*
  * @test
- * @bug 8031320
- * @summary Verify processing of RTMLockingThreshold option.
- * @library /test/lib /
- * @modules java.base/jdk.internal.misc
- *          java.management
- * @requires vm.flagless
- * @requires vm.rtm.compiler
- * @run driver compiler.rtm.cli.TestRTMLockingThresholdOption
+ * @bug 8265917
+ * @summary test the optimization of pow(x, 2.0)
+ * @run main/othervm TestPow2Opt
+ * @run main/othervm -Xint TestPow2Opt
+ * @run main/othervm -Xbatch -XX:TieredStopAtLevel=1 TestPow2Opt
+ * @run main/othervm -Xbatch -XX:-TieredCompilation  TestPow2Opt
  */
 
-package compiler.rtm.cli;
+public class TestPow2Opt {
 
-public class TestRTMLockingThresholdOption
-        extends RTMGenericCommandLineOptionTest {
-    private static final String DEFAULT_VALUE = "10000";
-
-    private TestRTMLockingThresholdOption() {
-        super("RTMLockingThreshold", false, true,
-                TestRTMLockingThresholdOption.DEFAULT_VALUE);
+  static void test(double a) {
+    double r1 = a * a;
+    double r2 = Math.pow(a, 2.0);
+    if (r1 != r2) {
+      throw new RuntimeException("pow(" + a + ", 2.0), expected: " + r1 + ", actual: " + r2);
     }
+  }
 
-    public static void main(String args[]) throws Throwable {
-        new TestRTMLockingThresholdOption().runTestCases();
+  public static void main(String[] args) throws Exception {
+    for (int i = 0; i < 10; i++) {
+      for (int j = 1; j < 100000; j++) {
+        test(j * 1.0);
+        test(1.0 / j);
+      }
     }
+  }
+
 }
