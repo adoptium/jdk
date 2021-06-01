@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,21 +19,10 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
 
-#include "precompiled.hpp"
-#include "runtime/deoptimization.hpp"
-#include "runtime/frame.inline.hpp"
-#include "runtime/stubRoutines.hpp"
-#include "runtime/thread.inline.hpp"
+// key: compiler.warn.strictfp
+// options: -Xlint:strictfp
 
-// Implementation of the platform-specific part of StubRoutines - for
-// a description of how to extend it, see the stubRoutines.hpp file.
-
-address StubRoutines::x86::_verify_fpu_cntrl_wrd_entry = NULL;
-address StubRoutines::x86::_method_entry_barrier = NULL;
-
-jint StubRoutines::x86::_fpu_subnormal_bias1[3] = { 0, 0, 0 };
-jint StubRoutines::x86::_fpu_subnormal_bias2[3] = { 0, 0, 0 };
-
+strictfp class UnneededStrictfpWarning {
+}
