@@ -1,10 +1,12 @@
 /*
- * Copyright (c) 2017, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.
+ * published by the Free Software Foundation.  Oracle designates this
+ * particular file as subject to the "Classpath" exception as provided
+ * by Oracle in the LICENSE file that accompanied this code.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -20,24 +22,13 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package jdk.jfr.internal.dcmd;
 
-
-/*
- * @test
- *
- * @bug 8167108 8266130
- * @summary converted from VM Testbase nsk/monitoring/ThreadMXBean/findMonitorDeadlockedThreads/find006.
- * VM Testbase keywords: [quick, monitoring]
- * VM Testbase readme:
- * DESCRIPTION
- *     Same test as find001 with additional calls to
- *     findMonitorDeadlockedThreads() while a thread is exiting.
- * COMMENT
- *     Derived from nsk/monitoring/ThreadMXBean/findMonitorDeadlockedThreads/find001.
- *
- * @library /vmTestbase
- *          /test/lib
- * @run main/othervm
- *      nsk.monitoring.ThreadMXBean.findMonitorDeadlockedThreads.find006
- */
-
+record Argument(
+    String name,
+    String description,
+    String type,
+    boolean mandatory,
+    String defaultValue,
+    boolean allowMultiple
+) { }
