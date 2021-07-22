@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,19 +20,31 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package metaspace.stressHierarchy.common.exceptions;
 
-/**
- * Usually this means that we got OOME:heap while trying to gain OOME:metaspace.
- * We pass test in this case as this breaks test logic. We have dedicated test configurations
- * for OOME:heap provoking class unloading, that why we are not missing test coverage here.
+import jdk.jpackage.test.Annotations.Test;
+import jdk.jpackage.test.Annotations.Parameter;
+import jdk.jpackage.test.JPackageCommand;
+
+/*
+ * @test
+ * @summary jpackage with values of --dest parameter breaking jpackage launcher
+ * @requires (os.family == "linux")
+ * @bug 8268974
+ * @library ../helpers
+ * @build jdk.jpackage.test.*
+ * @modules jdk.jpackage/jdk.jpackage.internal
+ * @compile LinuxWeirdOutputDirTest.java
+ * @run main/othervm/timeout=540 -Xmx512m jdk.jpackage.test.Main
+ *  --jpt-run=LinuxWeirdOutputDirTest
  */
-public class GotWrongOOMEException extends RuntimeException {
+public class LinuxWeirdOutputDirTest {
 
-    private static final long serialVersionUID = 1L;
-
-    public GotWrongOOMEException(String string) {
-        super(string);
+    @Test
+    @Parameter("bin")
+    @Parameter("lib")
+    public void test(String outputPath) {
+        JPackageCommand cmd = JPackageCommand.helloAppImage();
+        cmd.setArgumentValue("--dest", cmd.outputDir().resolve(outputPath));
+        cmd.executeAndAssertHelloAppImageCreated();
     }
-
 }
