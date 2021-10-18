@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, 2021, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,27 +22,17 @@
  *
  */
 
-#ifndef SHARE_GC_G1_G1FULLGCADJUSTTASK_HPP
-#define SHARE_GC_G1_G1FULLGCADJUSTTASK_HPP
+#ifndef SHARE_JFR_PERIODIC_JFRFINALIZERSTATISTICSEVENT_HPP
+#define SHARE_JFR_PERIODIC_JFRFINALIZERSTATISTICSEVENT_HPP
 
-#include "gc/g1/g1FullGCOopClosures.hpp"
-#include "gc/g1/g1FullGCTask.hpp"
-#include "gc/g1/g1RootProcessor.hpp"
-#include "gc/g1/heapRegionManager.hpp"
-#include "gc/shared/weakProcessor.hpp"
-#include "utilities/ticks.hpp"
+#include "memory/allocation.hpp"
 
-class G1CollectedHeap;
+class InstanceKlass;
 
-class G1FullGCAdjustTask : public G1FullGCTask {
-  G1RootProcessor          _root_processor;
-  WeakProcessor::Task      _weak_proc_task;
-  HeapRegionClaimer        _hrclaimer;
-  G1AdjustClosure          _adjust;
-
-public:
-  G1FullGCAdjustTask(G1FullCollector* collector);
-  void work(uint worker_id);
+class JfrFinalizerStatisticsEvent : AllStatic {
+ public:
+  static void send_unload_event(const InstanceKlass* ik) NOT_MANAGEMENT_RETURN;
+  static void generate_events() NOT_MANAGEMENT_RETURN;
 };
 
-#endif // SHARE_GC_G1_G1FULLGCADJUSTTASK_HPP
+#endif // SHARE_JFR_PERIODIC_JFRFINALIZERSTATISTICSEVENT_HPP
