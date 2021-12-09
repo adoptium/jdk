@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,38 +19,23 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
 
-#ifndef SHARE_JFR_PERIODIC_SAMPLING_JFRTHREADSAMPLER_HPP
-#define SHARE_JFR_PERIODIC_SAMPLING_JFRTHREADSAMPLER_HPP
+/*
+ * @test
+ * @bug 8277106
+ * @summary Verify no error is when compiling a class whose supertype is not exported.
+ * @modules jdk.compiler
+ *          jdk.jfr
+ * @compile --release 17 NonExportedSuperTypes.java
+ */
 
-#include "jfr/utilities/jfrAllocation.hpp"
+import jdk.jfr.Event;
 
-class JavaThread;
-class JfrBuffer;
-class JfrStackFrame;
-class JfrThreadSampler;
-class Thread;
+public class NonExportedSuperTypes {
 
-class JfrThreadSampling : public JfrCHeapObj {
-  friend class JfrRecorder;
- private:
-  JfrThreadSampler* _sampler;
-  void start_sampler(size_t interval_java, size_t interval_native);
-  void set_sampling_interval(bool java_interval, size_t period);
+    public void evt(Event evt) {
+        evt.toString();
+    }
 
-  JfrThreadSampling();
-  ~JfrThreadSampling();
-
-  static JfrThreadSampling& instance();
-  static JfrThreadSampling* create();
-  static void destroy();
-
- public:
-  static void set_java_sample_interval(size_t period);
-  static void set_native_sample_interval(size_t period);
-  static void on_javathread_suspend(JavaThread* thread);
-};
-
-#endif // SHARE_JFR_PERIODIC_SAMPLING_JFRTHREADSAMPLER_HPP
+}
