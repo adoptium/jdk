@@ -21,33 +21,35 @@
  * questions.
  */
 
-package jdk.jfr.api.recording.dump;
-
-import java.nio.file.Path;
-import jdk.jfr.Recording;
-
 /**
  * @test
- * @summary Tests that it's possible to dump to /dev/null without a livelock
- * @key jfr
- * @requires vm.hasJFR & (os.family != "windows")
- * @library /test/lib
- * @run main/othervm -Xlog:jfr jdk.jfr.api.recording.dump.TestDumpDevNull
+ * @bug 8287223
+ * @library /test/lib / patches
+ *
+ * @build java.base/java.lang.invoke.MethodHandleHelper
+ * @run main/bootclasspath/othervm -Xbatch -XX:CompileCommand=compileonly,*::test -XX:-TieredCompilation                         compiler.jsr292.NullConstantMHReceiver
+ * @run main/bootclasspath/othervm -Xbatch -XX:CompileCommand=compileonly,*::test -XX:+TieredCompilation -XX:TieredStopAtLevel=1 compiler.jsr292.NullConstantMHReceiver
  */
-public class TestDumpDevNull {
 
-    public static void main(String[] args) throws Exception {
-        try (Recording r1 = new Recording()) {
-            r1.setDestination(Path.of("/dev/null"));
-            r1.start();
-            // Force a chunk rotation which ensures that jdk.jfr.internal.ChunkChannel
-            // invokes FileChannel::transferFrom(ReadableByteChannel, position, count) twice.
-            // FileChannel will return 0 the second time because position exceeds
-            // FileChannel::size(), which is always 0 for /dev/null
-            // Without proper handling of return value 0, the ChunkChannel will spin indefinitely.
-            try (Recording r2 = new Recording()) {
-                r2.start();
+package compiler.jsr292;
+
+import java.lang.invoke.MethodHandleHelper;
+
+public class NullConstantMHReceiver {
+    static void test() throws Throwable {
+        MethodHandleHelper.invokeBasicL(null);
+    }
+
+    public static void main(String[] args) throws Throwable {
+        for (int i = 0; i < 15000; i++) {
+            try {
+                test();
+            } catch (NullPointerException e) {
+                // expected
+                continue;
             }
+            throw new AssertionError("NPE wasn't thrown");
         }
+        System.out.println("TEST PASSED");
     }
 }
