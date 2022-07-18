@@ -29,6 +29,8 @@ on:
   push:
     branches-ignore:
       - master
+      - dev
+      - release
       - pr/*
   workflow_dispatch:
     inputs:
