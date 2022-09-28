@@ -29,6 +29,8 @@ on:
   push:
     branches-ignore:
       - master
+      - dev*
+      - release*
       - pr/*
       - jdk*
   workflow_dispatch:
