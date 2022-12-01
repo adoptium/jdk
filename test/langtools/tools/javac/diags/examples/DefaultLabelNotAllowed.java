@@ -21,29 +21,15 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 8294583
- * @summary JShell: NPE in switch with non existing record pattern
- * @requires vm.continuations
- * @build KullaTesting TestingInputStream
- * @run testng Test8294583
- */
+// key: compiler.err.default.label.not.allowed
+// key: compiler.misc.feature.pattern.switch
+// key: compiler.warn.preview.feature.use.plural
+// options: --enable-preview -source ${jdk.version} -Xlint:preview
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-
-@Test
-public class Test8294583 extends KullaTesting {
-
-    public void test() {
-        assertEvalFail("switch (new Object()) {\n" +
-                        "   case Foo() -> {}\n" +
-                        "};");
-    }
-
-    @org.testng.annotations.BeforeMethod
-    public void setUp() {
-        super.setUp(bc -> bc.compilerOptions("--source", System.getProperty("java.specification.version"), "--enable-preview").remoteVMOptions("--enable-preview"));
+class DefaultLabelNotAllowed {
+    private void doSwitch(Object o) {
+        switch (o) {
+            case default: break;
+        }
     }
 }

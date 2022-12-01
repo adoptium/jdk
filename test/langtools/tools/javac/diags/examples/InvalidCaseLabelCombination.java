@@ -21,29 +21,16 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 8294583
- * @summary JShell: NPE in switch with non existing record pattern
- * @requires vm.continuations
- * @build KullaTesting TestingInputStream
- * @run testng Test8294583
- */
+// key: compiler.err.invalid.case.label.combination
+// key: compiler.misc.feature.case.null
+// key: compiler.warn.preview.feature.use
+// options: --enable-preview -source ${jdk.version} -Xlint:preview
 
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-
-@Test
-public class Test8294583 extends KullaTesting {
-
-    public void test() {
-        assertEvalFail("switch (new Object()) {\n" +
-                        "   case Foo() -> {}\n" +
-                        "};");
-    }
-
-    @org.testng.annotations.BeforeMethod
-    public void setUp() {
-        super.setUp(bc -> bc.compilerOptions("--source", System.getProperty("java.specification.version"), "--enable-preview").remoteVMOptions("--enable-preview"));
+class InvalidCaseLabelCombination {
+    private void doSwitch(Integer i) {
+        switch (i) {
+            case null, 1: break;
+            default: break;
+        }
     }
 }
