@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2022, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,21 +21,19 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 8007475
- * @summary Test memory stomp in stack map test
- * @run main/othervm -XX:+IgnoreUnrecognizedVMOptions -XX:+UseMallocOnly StackMapFrameTest
- */
-public class StackMapFrameTest {
+#ifdef _WIN64
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
 
-  public static void foo() {
-    Object o = new Object();
-  }
+// we use 'int' here to make sure the native code doesn't touch any of the bits
+// the important part is that our Java code performs argument normalization
+EXPORT int test(void (*cb)(int), int x) {
+    cb(x); // check upcall arg normalization
+    return x; // check return value normalization
+}
 
-  public static void main(String args[]) {
-    for (int i = 0; i < 25000; i++) {
-      foo();
-    }
-  }
+EXPORT int int_identity(int x) {
+    return x;
 }
