@@ -1,13 +1,10 @@
-
 /*
- * Copyright (c) 2003, 2008, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
+ * published by the Free Software Foundation.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -23,18 +20,27 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package jdk.jfr.jcmd;
 
-#ifndef WINDOWSFLAGS_H
-#define WINDOWSFLAGS_H
+/**
+ * @test
+ * @summary The test verifies that options can only be specified once with jcmd JFR
+ * @key jfr
+ * @requires vm.hasJFR
+ * @library /test/lib /test/jdk
+ * @modules jdk.jfr/jdk.jfr.internal.dcmd
+ * @run main/othervm jdk.jfr.jcmd.TestJcmdOptionSpecifiedOnce
+ */
+public class TestJcmdOptionSpecifiedOnce {
 
-extern BOOL      useD3D;             // d3d enabled flag
-extern BOOL      forceD3DUsage;      // force d3d on or off
-extern jboolean  g_offscreenSharing; // JAWT accelerated surface sharing
-extern BOOL      setHighDPIAware;    // whether to set High DPI Aware flag on Vista
+    public static void main(String[] args) throws Exception {
 
-void SetD3DEnabledFlag(JNIEnv *env, BOOL d3dEnabled, BOOL d3dSet);
+        testJCmdConflict();
+    }
 
-BOOL IsD3DEnabled();
-BOOL IsD3DForced();
+    private static void testJCmdConflict() {
+        var output= JcmdHelper.jcmd("JFR.start name=hello name=greetings");
+        output.shouldContain("name can only be specified once");
+    }
+}
 
-#endif // WINDOWSFLAGS_H
