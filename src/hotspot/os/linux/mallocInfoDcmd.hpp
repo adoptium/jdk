@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001, 2022, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,27 +22,30 @@
  *
  */
 
-#ifndef SHARE_GC_SERIAL_DEFNEWGENERATION_INLINE_HPP
-#define SHARE_GC_SERIAL_DEFNEWGENERATION_INLINE_HPP
+#ifndef OS_LINUX_MALLOCINFODCMD_HPP
+#define OS_LINUX_MALLOCINFODCMD_HPP
 
-#include "gc/serial/defNewGeneration.hpp"
+#include "services/diagnosticCommand.hpp"
 
-#include "gc/shared/cardTableRS.hpp"
-#include "gc/shared/genCollectedHeap.hpp"
-#include "gc/shared/space.inline.hpp"
-#include "oops/access.inline.hpp"
-#include "utilities/devirtualizer.inline.hpp"
+class outputStream;
 
-// Methods of protected closure types
+class MallocInfoDcmd : public DCmd {
+public:
+  MallocInfoDcmd(outputStream* output, bool heap) : DCmd(output, heap) {}
+  static const char* name() {
+    return "System.native_heap_info";
+  }
+  static const char* description() {
+    return "Attempts to output information regarding native heap usage through malloc_info(3). If unsuccessful outputs \"Error: \" and a reason.";
+  }
+  static const char* impact() {
+    return "Low";
+  }
+  static const JavaPermission permission() {
+    JavaPermission p = { "java.lang.management.ManagementPermission", "monitor", nullptr };
+    return p;
+  }
+  void execute(DCmdSource source, TRAPS) override;
+};
 
-template <typename OopClosureType>
-void DefNewGeneration::oop_since_save_marks_iterate(OopClosureType* cl) {
-  // No allocation in eden and from spaces, so no iteration required.
-  assert(eden()->saved_mark_at_top(), "inv");
-  assert(from()->saved_mark_at_top(), "inv");
-
-  to()->oop_since_save_marks_iterate(cl);
-  to()->set_saved_mark();
-}
-
-#endif // SHARE_GC_SERIAL_DEFNEWGENERATION_INLINE_HPP
+#endif // OS_LINUX_MALLOCINFODCMD_HPP
