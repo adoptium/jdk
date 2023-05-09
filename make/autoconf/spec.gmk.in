@@ -192,6 +192,7 @@ PRODUCT_SUFFIX:=@PRODUCT_SUFFIX@
 JDK_RC_PLATFORM_NAME:=@JDK_RC_PLATFORM_NAME@
 JDK_RC_NAME:=@JDK_RC_NAME@
 COMPANY_NAME:=@COMPANY_NAME@
+COMPANY_NAME_PADDED:=@COMPANY_NAME_PADDED@
 HOTSPOT_VM_DISTRO:=@HOTSPOT_VM_DISTRO@
 MACOSX_BUNDLE_NAME_BASE=@MACOSX_BUNDLE_NAME_BASE@
 MACOSX_BUNDLE_ID_BASE=@MACOSX_BUNDLE_ID_BASE@
@@ -280,7 +281,8 @@ ifneq ($(COMPANY_NAME),)
   # VersionProps.java.template in the jdk for "java.vendor" and
   # vm_version.cpp in the VM for "java.vm.vendor")
   ifneq ($(COMPANY_NAME), N/A)
-    VERSION_CFLAGS += -DVENDOR='"$(COMPANY_NAME)"'
+    # Use padded definition so abstract_vm_version.cpp object is comparable
+    VERSION_CFLAGS += -DVENDOR='"$(COMPANY_NAME_PADDED)"'
   endif
 endif
 

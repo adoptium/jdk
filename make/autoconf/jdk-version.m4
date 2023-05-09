@@ -108,7 +108,18 @@ AC_DEFUN_ONCE([JDKVER_SETUP_JDK_VERSION_NUMBERS],
        and 'java.vm.vendor' system properties.],
     DEFAULT_DESC: [from branding.conf],
     CHECK_VALUE: [UTIL_CHECK_STRING_NON_EMPTY_PRINTABLE])
+
+  # Squash multiple spaces now to get length correct, since they will be later anyway
+  COMPANY_NAME=$(echo $COMPANY_NAME | $TR -s " ")
+
+  # Create padded name to 64 bytes (63 char+\0) for comparable builds
+  VENDOR_NAME_LEN=${#COMPANY_NAME}
+  # sequence(vendor length to 62)*\000 = nul padding to 63 chars
+  COMPANY_NAME_PADDING=$($PRINTF "\\\\000%.0s" $(seq $VENDOR_NAME_LEN 62))
+  COMPANY_NAME_PADDED=${COMPANY_NAME}${COMPANY_NAME_PADDING}
+
   AC_SUBST(COMPANY_NAME)
+  AC_SUBST(COMPANY_NAME_PADDED)
 
   # The vendor URL, if any
   # Only set VENDOR_URL if '--with-vendor-url' was used and is not empty.

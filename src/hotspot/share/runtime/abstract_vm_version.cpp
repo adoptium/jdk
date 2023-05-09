@@ -121,7 +121,8 @@ const char* Abstract_VM_Version::vm_vendor() {
 #ifdef VENDOR
   return VENDOR;
 #else
-  return "Oracle Corporation";
+  // vm_vendor const char is padded to 64 bytes(63chars+\0) so C object is "comparable"
+  return "Oracle Corporation\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000\000";
 #endif
 }
 
