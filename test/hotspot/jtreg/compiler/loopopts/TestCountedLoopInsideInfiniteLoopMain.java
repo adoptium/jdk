@@ -1,6 +1,5 @@
 /*
  * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021, Red Hat, Inc. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,46 +21,19 @@
  * questions.
  */
 
-/**
+/*
  * @test
- * @bug 8269752
- * @summary C2: assert(false) failed: Bad graph detected in build_loop_late
- *
- * @run main/othervm -Xcomp -XX:-TieredCompilation -XX:CompileOnly=TestMainBodyExecutedOnce::* TestMainBodyExecutedOnce
- *
+ * @bug 8308749
+ * @compile TestCountedLoopInsideInfiniteLoop.jasm
+ * @summary Counted Loops inside infinite loops are only detected later,
+ *          and may still be a Region and not a LoopNode as expected.
+ * @run main/othervm -Xcomp -XX:-TieredCompilation -XX:PerMethodTrapLimit=0
+ *      -XX:CompileCommand=compileonly,TestCountedLoopInsideInfiniteLoop::test
+ *      TestCountedLoopInsideInfiniteLoopMain
  */
 
-
-public class TestMainBodyExecutedOnce {
-    static int N;
-    static long vMeth_check_sum;
-
-    public static void main(String[] strArr) {
-        TestMainBodyExecutedOnce _instance = new TestMainBodyExecutedOnce();
-        for (int i = 0; i < 10; i++) {
-            _instance.test();
-        }
-    }
-
-    void test() {
-        vMeth(3);
-    }
-
-    void vMeth(int i2) {
-        double d = 1.74287;
-        int i3 = -36665, i4, iArr[] = new int[N];
-        short s;
-        long lArr[] = new long[N];
-        while (++i3 < 132) {
-            if (i2 != 0) {
-                vMeth_check_sum += i3;
-                return;
-            }
-            i4 = 1;
-            while (++i4 < 12) {
-                i2 += i4;
-            }
-        }
-        vMeth_check_sum += i3;
+public class TestCountedLoopInsideInfiniteLoopMain {
+    public static void main (String[] args) {
+        TestCountedLoopInsideInfiniteLoop.test(0, 0, 0, 0);
     }
 }
