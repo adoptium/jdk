@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 2018, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Rivos Inc. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,19 +20,20 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
+ *
  */
 
-/*
- * @test
- * @modules java.net.http/jdk.internal.net.http
- * @summary Verifies that the HTTP Client, by default, uses the system-wide
- * proxy selector, and that that selector supports the standard HTTP proxy
- * system properties.
- * @run testng/othervm
- *     -Dhttp.proxyHost=foo.proxy.com
- *     -Dhttp.proxyPort=9876
- *     -Dhttp.nonProxyHosts=*.direct.com
- *     -Dhttps.proxyHost=secure.proxy.com
- *     -Dhttps.proxyPort=5443
- *     java.net.http/jdk.internal.net.http.DefaultProxy
- */
+#ifndef OS_LINUX_RISCV_HWPROBE_LINUX_HPP
+#define OS_LINUX_RISCV_HWPROBE_LINUX_HPP
+
+#include "memory/allStatic.hpp"
+#include "runtime/vm_version.hpp"
+#include "utilities/growableArray.hpp"
+
+class RiscvHwprobe: public AllStatic {
+  static void add_features_from_query_result();
+ public:
+  static bool probe_features();
+};
+
+#endif // OS_LINUX_RISCV_HWPROBE_LINUX_HPP
