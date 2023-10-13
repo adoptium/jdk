@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,31 +21,13 @@
  * questions.
  */
 
-/*
- * @test
- * @bug 8206879
- * @modules jdk.localedata
- * @summary Currency decimal marker incorrect for Peru (COMPAT).
- * @run junit/othervm -Djava.locale.providers=COMPAT TestPeruCurrencyFormat
- */
+#include <jni.h>
+#include <stdlib.h>
+#include <string.h>
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-public class TestPeruCurrencyFormat {
-
-    // Confirm correct decimal marker for Peru locale on COMPAT
-    @Test
-    public void peruDecimalMarketCOMPAT() {
-        final String expected = "S/.1,234.56";
-        NumberFormat currencyFmt =
-                NumberFormat.getCurrencyInstance(Locale.of("es", "PE"));
-        String s = currencyFmt.format(1234.56);
-        assertEquals(expected, s,
-                "Currency format for Peru failed, expected " + expected + ", got " + s);
-    }
+JNIEXPORT jlong JNICALL Java_org_openjdk_bench_java_lang_foreign_ToCStringTest_writeString(JNIEnv *const env, const jclass cls, const jstring text) {
+    const char *str = (*env)->GetStringUTFChars(env, text, NULL);
+    jlong addr = (jlong)(void*)str;
+    (*env)->ReleaseStringUTFChars(env, text, str);
+    return addr;
 }
