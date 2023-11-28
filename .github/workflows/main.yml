@@ -32,6 +32,7 @@ on:
       - dev
       - release
       - pr/*
+      - jdk*
   workflow_dispatch:
     inputs:
       platforms:
