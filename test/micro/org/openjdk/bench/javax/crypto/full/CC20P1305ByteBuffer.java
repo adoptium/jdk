@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,12 +20,31 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package org.openjdk.bench.javax.crypto.full;
 
-// key: compiler.warn.proc.use.proc.or.implicit
-// key: compiler.note.implicit.annotation.processing
-// options: -Xprefer:source
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Setup;
 
-import p.SomeClass;
+import java.security.spec.AlgorithmParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
 
-@Deprecated
-class ProcUseProcOrImplicit extends SomeClass { }
+/**
+ * This performance tests runs ChaCha20-Poly1305 encryption and decryption
+ * using heap and direct ByteBuffers for input and output buffers with single
+ * and multi-part operations.
+ */
+
+public class CC20P1305ByteBuffer extends ByteBufferBase {
+
+    public static final int IV_MODULO = 12;
+
+    public AlgorithmParameterSpec getNewSpec() {
+        iv_index = (iv_index + 1) % IV_MODULO;
+        return new IvParameterSpec(iv, iv_index, IV_MODULO);
+    }
+
+    @Setup
+    public void setup() throws Exception {
+        init("ChaCha20-Poly1305/None/NoPadding", keyLength);
+    }
+}

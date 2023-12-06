@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2023, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2023, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,12 +20,29 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package org.openjdk.bench.javax.crypto.small;
 
-// key: compiler.warn.proc.use.proc.or.implicit
-// key: compiler.note.implicit.annotation.processing
-// options: -Xprefer:source
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Setup;
 
-import p.SomeClass;
+import java.security.spec.AlgorithmParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
 
-@Deprecated
-class ProcUseProcOrImplicit extends SomeClass { }
+/**
+ * This small performance tests runs ChaCha20-Poly1305 encryption and decryption
+ * using heap and direct ByteBuffers for input and output buffers with single
+ * and multi-part operations.  Only 1024 plaintext data length is tested.
+ */
+
+public class CC20P1305ByteBuffer extends
+    org.openjdk.bench.javax.crypto.full.CC20P1305ByteBuffer {
+
+    @Param({"1024"})
+    int dataSize;
+
+    @Setup
+    public void setup() throws Exception {
+        init("ChaCha20-Poly1305/None/NoPadding", 256, dataSize);
+    }
+
+}
