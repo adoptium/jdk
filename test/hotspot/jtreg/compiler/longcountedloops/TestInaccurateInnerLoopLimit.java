@@ -1,12 +1,10 @@
 /*
- * Copyright (c) 1997, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2024, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
+ * published by the Free Software Foundation.
  *
  * This code is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
@@ -23,11 +21,22 @@
  * questions.
  */
 
-#include "jvm.h"
-#include "java_lang_String.h"
+/**
+ * @test
+ * @bug 8323972
+ * @summary C2 compilation fails with assert(!x->as_Loop()->is_loop_nest_inner_loop()) failed: loop was transformed
+ *
+ * @run main/othervm -Xcomp -XX:CompileCommand=compileonly,TestInaccurateInnerLoopLimit::test* -XX:-TieredCompilation TestInaccurateInnerLoopLimit
+ *
+ */
 
-JNIEXPORT jobject JNICALL
-Java_java_lang_String_intern(JNIEnv *env, jobject this)
-{
-    return JVM_InternString(env, this);
+public class TestInaccurateInnerLoopLimit {
+
+    public static void main(String args[]) {
+        test();
+    }
+
+    public static void test() {
+        for (long i = 9223372034707292164L; i > 9223372034707292158L; i += -2L) { }
+    }
 }
