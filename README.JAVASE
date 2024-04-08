@@ -1,0 +1,18 @@
+Do NOT remove or modify this file.
+
+The following notice is required to be included in the root directory of source
+code repositories.
+
+This version of Eclipse Temurin source code is made available in support of the
+open source development process. Some numbered or tagged revisions of this
+source may have been tested and found to pass the Java SE TCK, and you can find
+information on which revisions or tags at https://www.adoptium.net.
+Please note that since only binaries can be tested, source code cannot be
+described as a compatible implementation of the Java SE Specification. The
+different build environment on your machine and any changes you may make to this
+code could render your resulting build incompatible. Because of this, writing or
+deploying applications to builds based on this code can lead to lack of
+portability. You should instead consider deploying production applications on
+the pre-built binaries of Eclipse Temurin that are available at
+https://www.adoptium.net that have been tested and certified to meet the Java SE
+compatibility requirements.
