@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2002, 2024, Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2014, Red Hat Inc. All rights reserved.
- * Copyright (c) 2020, 2021, Huawei Technologies Co., Ltd. All rights reserved.
+ * Copyright (c) 2024, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,18 +19,22 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
 
-#ifndef CPU_RISCV_CODEBUFFER_RISCV_HPP
-#define CPU_RISCV_CODEBUFFER_RISCV_HPP
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 
-private:
-  void pd_initialize() {}
-  bool pd_finalize_stubs();
+/**
+ * Use by tests in SetDefaultProvider to test startup with a custom default file system
+ * provider and a custom system class loader.
+ */
 
-public:
-  void flush_bundle(bool start_new_bundle) {}
-  static bool supports_shared_stubs() { return true; }
+public class CustomSystemClassLoader extends ClassLoader {
+    public CustomSystemClassLoader(ClassLoader parent) {
+        super(parent);
 
-#endif // CPU_RISCV_CODEBUFFER_RISCV_HPP
+        // use default file system
+        FileSystem fs = FileSystems.getDefault();
+        var path = fs.getPath("foo");
+    }
+}
