@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,23 +22,34 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package jdk.internal.io;
 
-import java.nio.charset.Charset;
+package sun.security.ssl;
 
-/**
- * Service provider interface for JdkConsole implementations.
+/*
+ * Scopes defining different parts of TLS protocol.
  */
-public interface JdkConsoleProvider {
-    /**
-     * The module name of the JdkConsole default provider.
-     */
-    String DEFAULT_PROVIDER_MODULE_NAME = "java.base";
 
-    /**
-     * {@return the Console instance, or {@code null} if not available}
-     * @param isTTY indicates if the jvm is attached to a terminal
-     * @param charset charset of the platform console
-     */
-    JdkConsole console(boolean isTTY, Charset charset);
+public enum SSLScope {
+    // Handshake signature scope as in signature_algorithms extension.
+    HANDSHAKE_SIGNATURE("HandshakeSignature"),
+
+    // Certificate signature scope as in signature_algorithms_cert extension.
+    CERTIFICATE_SIGNATURE("CertificateSignature");
+
+    private final String name;
+
+    SSLScope(String name) {
+        this.name = name;
+    }
+
+    // Note: the SSLScope name is case-insensitive.
+    public static SSLScope nameOf(String scopeName) {
+        for (SSLScope scope : SSLScope.values()) {
+            if (scope.name.equalsIgnoreCase(scopeName)) {
+                return scope;
+            }
+        }
+
+        return null;
+    }
 }
