@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 1999, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,49 +21,51 @@
  * questions.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.Panel;
-import java.awt.TextArea;
-
 /*
  * @test
- * @bug 4127272
- * @summary TextArea displays head of text when scrolling horizontal bar.
+ * @bug 4208549
+ * @summary Makes sure preferred size returned by layout managers used by
+ *          JSplitPane is correct.
  * @library /java/awt/regtesthelpers
  * @build PassFailJFrame
- * @run main/manual TextScrollTest
+ * @run main/manual PreferredSizeLayoutTest
  */
 
-public class TextScrollTest extends Frame {
-    private static final String INSTRUCTIONS = """
-            1. A TextArea whose content starts with the text ",
-               'Scroll till the' will appear on the window ",
-            2. Use the Horizontal thumb button of the TextArea to view the entire",
-               content of the TextArea",
-            3. While scrolling, if the text 'Scroll till the' appears repeatedly, Click Fail  ",
-               else Click Pass"
-            """;
+import java.awt.Container;
+import java.awt.FlowLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JSplitPane;
+
+public class PreferredSizeLayoutTest {
+    static final String INSTRUCTIONS = """
+        If the buttons in the JSplitpanes do not have '...' in them,
+        click PASS, otherwise click FAIL.
+    """;
 
     public static void main(String[] args) throws Exception {
         PassFailJFrame.builder()
-                .title("TextScrollTest")
+                .title("PreferredSizeLayoutTest Test Instructions")
                 .instructions(INSTRUCTIONS)
                 .columns(40)
-                .testUI(TextScrollTest::new)
+                .testUI(PreferredSizeLayoutTest::createUI)
                 .build()
                 .awaitAndCheck();
     }
 
-    public TextScrollTest() {
-        this.setLayout(new BorderLayout());
+    static JFrame createUI() {
+        JFrame f = new JFrame("Preferred Size Layout Test");
+        Container parent = f.getContentPane();
+        JSplitPane sp = new JSplitPane();
 
-        Panel p = new Panel();
-        TextArea ta = new TextArea("Scroll till the right end of the " +
-                "TextArea is reached. Action Done?\n", 10, 20);
+        parent.setLayout(new FlowLayout());
 
-        p.add(ta);
-        add("Center", p);
-        setSize(200, 200);
+        sp.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        parent.add(sp);
+        sp = new JSplitPane();
+        sp.setOrientation(JSplitPane.VERTICAL_SPLIT);
+        parent.add(sp);
+        f.setSize(400, 300);
+        return f;
     }
 }

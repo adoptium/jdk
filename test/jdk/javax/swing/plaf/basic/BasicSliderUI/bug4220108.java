@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1998, 2024, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2000, 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -21,49 +21,55 @@
  * questions.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
-import java.awt.Panel;
-import java.awt.TextArea;
-
 /*
  * @test
- * @bug 4127272
- * @summary TextArea displays head of text when scrolling horizontal bar.
+ * @bug 4220108
+ * @summary JSlider in JInternalFrame should be painted correctly
  * @library /java/awt/regtesthelpers
  * @build PassFailJFrame
- * @run main/manual TextScrollTest
+ * @run main/manual bug4220108
  */
 
-public class TextScrollTest extends Frame {
-    private static final String INSTRUCTIONS = """
-            1. A TextArea whose content starts with the text ",
-               'Scroll till the' will appear on the window ",
-            2. Use the Horizontal thumb button of the TextArea to view the entire",
-               content of the TextArea",
-            3. While scrolling, if the text 'Scroll till the' appears repeatedly, Click Fail  ",
-               else Click Pass"
-            """;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+
+public class bug4220108 {
+    static final String INSTRUCTIONS = """
+        If you see a slider in the internal frame, then the test PASSES.
+        Otherwise the test FAILS.
+    """;
 
     public static void main(String[] args) throws Exception {
         PassFailJFrame.builder()
-                .title("TextScrollTest")
+                .title("bug4220108 Test Instructions")
                 .instructions(INSTRUCTIONS)
                 .columns(40)
-                .testUI(TextScrollTest::new)
+                .testUI(bug4220108::createUI)
                 .build()
                 .awaitAndCheck();
     }
 
-    public TextScrollTest() {
-        this.setLayout(new BorderLayout());
+    static JFrame createUI() {
+        JFrame f = new JFrame("Internal Frame Slider Test");
+        f.setLayout(new FlowLayout());
+        JDesktopPane desktop = new JDesktopPane();
+        f.setContentPane(desktop);
 
-        Panel p = new Panel();
-        TextArea ta = new TextArea("Scroll till the right end of the " +
-                "TextArea is reached. Action Done?\n", 10, 20);
-
-        p.add(ta);
-        add("Center", p);
-        setSize(200, 200);
+        JInternalFrame iFrame =
+                new JInternalFrame("Slider Frame", true, true, true, true);
+        JSlider sl = new JSlider();
+        iFrame.add(sl);
+        iFrame.add(new JLabel("Label"), BorderLayout.SOUTH);
+        desktop.add(iFrame);
+        iFrame.pack();
+        iFrame.setVisible(true);
+        f.setSize(300, 200);
+        return f;
     }
 }
