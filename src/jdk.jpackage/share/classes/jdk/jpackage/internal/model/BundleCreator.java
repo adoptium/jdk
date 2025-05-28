@@ -22,23 +22,26 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+
 package jdk.jpackage.internal.model;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
+
 /**
- * Details of application launcher startup configuration using Java module.
+ * Creates a bundle from the given specification.
  */
-public interface LauncherModularStartupInfoMixin {
+@FunctionalInterface
+public interface BundleCreator<T extends BundleSpec> {
 
     /**
-     * Gets the main module name.
-     * @return the main module name
+     * Creates a bundle from the given specification in the given directory.
+     *
+     * @param spec the bundle specification
+     * @param dst the directory where to create the bundle
+     * @throws PackagerException if packaging error occurs
+     * @throws IOException if an I/O error occurs
      */
-    String moduleName();
-
-    /**
-     * Default implementation of {@link LauncherModularStartupInfoMixin} interface.
-     */
-    record Stub(String moduleName) implements LauncherModularStartupInfoMixin {
-    }
-
+    void create(T spec, Path dst) throws PackagerException, IOException;
 }
