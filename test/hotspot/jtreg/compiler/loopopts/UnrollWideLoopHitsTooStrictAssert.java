@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2025, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,23 +19,32 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
 
-#ifndef SHARE_JFR_RECORDER_STACKTRACE_JFRVFRAMESTREAM_HPP
-#define SHARE_JFR_RECORDER_STACKTRACE_JFRVFRAMESTREAM_HPP
+/*
+ * @test
+ * @bug 8356647
+ * @summary C2's unrolling code has a too strict assert when a counted loop's range is as wide as int's.
+ * @run main/othervm -XX:CompileCommand=compileonly,compiler.loopopts.UnrollWideLoopHitsTooStrictAssert::test -Xcomp
+ *                   compiler.loopopts.UnrollWideLoopHitsTooStrictAssert
+ * @run main compiler.loopopts.UnrollWideLoopHitsTooStrictAssert
+ */
 
-#include "runtime/vframe.hpp"
+package compiler.loopopts;
 
-class JfrVframeStream : public vframeStreamCommon {
- private:
-  bool _vthread;
+public class UnrollWideLoopHitsTooStrictAssert {
+    public static void main(String[] args) {
+        test(true);
+    }
 
-  void next_frame();
-  static RegisterMap::WalkContinuation walk_continuation(JavaThread* jt);
- public:
-  JfrVframeStream(JavaThread* jt, const frame& fr, bool in_continuation, bool stop_at_java_call_stub);
-  void next_vframe();
-};
-
-#endif // SHARE_JFR_RECORDER_STACKTRACE_JFRVFRAMESTREAM_HPP
+    private static long test(boolean flag) {
+        long x = 0;
+        for (int i = Integer.MIN_VALUE; i < Integer.MAX_VALUE; ++i) {
+            x += i;
+            if (flag) {
+                break;
+            }
+        }
+        return x;
+    }
+}
