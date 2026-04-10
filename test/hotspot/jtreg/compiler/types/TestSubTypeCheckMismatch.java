@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, 2026, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -20,38 +20,31 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
-package nsk.jvmti.scenarios.hotswap.HS103.hs103t002;
 
-import jdk.test.lib.thread.ThreadWrapper;
+/**
+ * @test
+ * @bug 8374496
+ * @summary "C2: assert(val->find_edge(con) > 0) failed"
+ *
+ * @run main/othervm -Xbatch ${test.main.class}
+ */
+package compiler.types;
 
-import java.util.concurrent.atomic.AtomicInteger;
+public class TestSubTypeCheckMismatch {
+    static class A {}
 
-public class MyThread extends ThreadWrapper {
-    public static AtomicInteger ai = new AtomicInteger(0);
-    public static final int size = 10;
-
-    int state = 0;
-
-    public MyThread(String name) {
-        super(name);
-    }
-
-    public int getThreadState() {
-        return state;
-    }
-
-    public void run() {
-        try {
-            doForThis();
-            ai.incrementAndGet();
-        } catch (Exception exp) {
-            exp.printStackTrace();
+    static Integer test(Object o, int a, int b) {
+        int i = -1;
+        if (o instanceof A) { // results in SubTypeCheck node and diamond-shape if
+            i = Math.min(a, b);
         }
+        return Integer.valueOf(i); // late inlined
     }
 
-    public void doForThis() {
-        for (int i = 0; i < size; i++) {
-            state += 1;
+    public static void main(String[] args) {
+        for (int i = 0; i < 20_000; i++) {
+            test(new A(),      0, 0);
+            test(new Object(), 0, 0);
         }
     }
 }
