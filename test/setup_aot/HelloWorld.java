@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003, 2026, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,27 +19,11 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
+ *
  */
 
-import java.io.*;
-
-/*
- * @test
- *
- * @summary converted from VM Testbase nsk/jvmti/SingleStep/singlestep002.
- *     This test exercises the JVMTI event SingleStep.
- *     It verifies that this event is sent only during the live phase
- *     of VM execution.
- *     The test works as follows. The tested event is enabled in the
- *     'OnLoad' phase. Then all received SingleStep events is checked
- *     to be sent only during the live phase via the GetPhase() call.
- *
- * @run main/othervm/native -agentlib:singlestep02 singlestep02
- */
-
-public class singlestep02 {
-
-    public static void main(String[] args) {
+public class HelloWorld {
+    public static void main(String args[]) {
+        System.out.println("HelloWorld");
     }
-
 }
