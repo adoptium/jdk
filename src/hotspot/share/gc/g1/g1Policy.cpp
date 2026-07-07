@@ -1253,6 +1253,7 @@ void G1Policy::update_survivors_policy() {
 }
 
 bool G1Policy::force_concurrent_start_if_outside_cycle(GCCause::Cause gc_cause) {
+  assert_at_safepoint_on_vm_thread();
   // Check whether a concurrent cycle is active, do not include the
   // reclamation/mixed phase. This means that we can schedule a concurrent cycle
   // even while in the mixed phase.
