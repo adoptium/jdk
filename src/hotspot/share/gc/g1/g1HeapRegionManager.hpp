@@ -61,10 +61,10 @@ class G1HeapRegionTable : public G1BiasedMappedArray<G1HeapRegion*> {
 // region we retain the G1HeapRegion to be able to re-use it in the
 // future (in case we recommit it).
 //
-// We keep track of four lengths:
+// We keep track of three region counts:
 //
-// * _num_committed (returned by length()) is the number of currently
-//   committed regions. These may not be contiguous.
+// * num_committed_regions() is the number of currently committed regions using
+//   the committed map. These may not be contiguous.
 // * _next_highest_used_hrm_index (not exposed outside this class) is the
 //   highest heap region index +1 for which we have G1HeapRegions.
 // * max_num_regions() returns the maximum number of regions the heap has reserved.
@@ -128,10 +128,10 @@ class G1HeapRegionManager: public CHeapObj<mtGC> {
 
   void expand(uint index, uint num_regions, WorkerThreads* pretouch_workers = nullptr);
 
-  // G1RegionCommittedMap helpers. These functions do the work that comes with
+  // G1CommittedRegionMap helpers. These functions do the work that comes with
   // the state changes tracked by G1CommittedRegionMap. To make sure this is
   // safe from a multi-threading point of view there are two lock protocols in
-  // G1RegionCommittedMap::guarantee_mt_safety_* that are enforced. The lock
+  // G1CommittedRegionMap::guarantee_mt_safety_* that are enforced. The lock
   // needed should have been acquired before calling these functions.
   void activate_regions(uint index, uint num_regions);
   void deactivate_regions(uint start, uint num_regions);
@@ -226,7 +226,7 @@ public:
   uint num_used_regions() const { return num_committed_regions() - num_free_regions(); }
 
   uint num_free_regions(uint node_index) const {
-    return _free_list.length(node_index);
+    return _free_list.num_regions_on_node(node_index);
   }
 
   size_t total_free_bytes() const {
@@ -237,7 +237,7 @@ public:
   uint num_inactive_regions() const { return max_num_regions() - num_committed_regions(); }
 
   // Return the number of regions currently active and available for use.
-  uint num_committed_regions() const { return _committed_map.num_active(); }
+  uint num_committed_regions() const { return _committed_map.num_active_regions(); }
 
   // The number of regions reserved for the heap.
   uint max_num_regions() const { return (uint)_regions.length(); }
