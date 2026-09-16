@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1997, 2025, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -19,22 +19,34 @@
  * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
  * or visit www.oracle.com if you need additional information or have any
  * questions.
- *
  */
 
-#ifndef SHARE_OOPS_INSTANCEOOP_HPP
-#define SHARE_OOPS_INSTANCEOOP_HPP
+/**
+ * @test
+ * @bug 8391777
+ * @summary Test detection of start node when browsing dominator nodes to narrow IV type
+ * @requires vm.compiler2.enabled
+ * @run main/othervm -Xcomp -XX:-TieredCompilation
+ *                   -XX:CompileCommand=quiet -XX:CompileCommand=compileonly,${test.main.class}::test
+ *                   ${test.main.class}
+ */
 
-#include "cppstdlib/type_traits.hpp"
-#include "oops/oop.hpp"
+package compiler.loopopts;
 
-// An instanceOop is an instance of a Java Class
-// Evaluating "new HashTable()" will create an instanceOop.
+public class TestStartDominator {
+    static float getShort() {
+        return 42;
+    }
 
-class instanceOopDesc : public oopDesc {
-};
+    static short test() {
+        short value = (short) -getShort();
 
-// See similar requirement for oopDesc.
-static_assert(std::is_trivially_default_constructible<instanceOopDesc>::value);
+        while (-1 > ++value) { }
+        return value;
+    }
 
-#endif // SHARE_OOPS_INSTANCEOOP_HPP
+    public static void main(String[] args) {
+        test();
+    }
+}
+
